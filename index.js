@@ -149,3 +149,27 @@ function doDdlProcessing() {
         mapTree.pushLayer(temp_layer_g);
     }
 }
+
+function drawALayerOnCanvas() {
+    var name = document.getElementById("drawingLayerInput").value;
+    var layerIndex = 0;
+    for (var i = 0; i < mapTree.layers.length; i++) {
+        if (mapTree.layers[i].name == name) {
+            layerIndex = i;
+            break;
+        }
+    }
+    var drawingLayerLines = mapTree.layers[layerIndex].polyLines;
+    var ctx = document.getElementById("myCanvas").getContext("2d");
+    ctx.clearRect(0, 0, 500, 500);
+    for (var i = 0; i < drawingLayerLines.length; i++) {
+        var polyLine = drawingLayerLines[i];
+        ctx.beginPath();
+        ctx.moveTo(polyLine.points[0].x / 10, polyLine.points[0].y / 10);
+        for (var k = 0; k < polyLine.points.length; k++) {
+            //draw a line on canvas
+            ctx.lineTo(polyLine.points[k].x / 10, polyLine.points[k].y / 10);
+        }
+        ctx.stroke();
+    }
+}

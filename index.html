@@ -5,8 +5,12 @@
 <body>
 <h2>DDL To JSON Converter</h2>
 <input type="file" name="file" id="file">
-<br>
+<br><br>
 <button onclick="AbsorbDllFile()">Convert</button>
+<br>
+<input type="text" value="400KV" id="drawingLayerInput"><button onclick="drawALayerOnCanvas()">Draw Layer</button>
+<br><br><br>
+<canvas id="myCanvas" width="500" height="500" style="border:1px solid #d3d3d3;">
 <script src="ddlJson.js"></script>
 <script src="index.js"></script>
 </body>
