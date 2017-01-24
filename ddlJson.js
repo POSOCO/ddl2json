@@ -30,6 +30,7 @@ function Layer(name) {
 function PolyLine(name) {
     this.points = [];
     this.name = null;
+    this.meta = [];
     this.gab = null;
     this.setField = null;
     this.pushPoint = pushPoint.bind(this);

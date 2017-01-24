@@ -5,6 +5,7 @@ var temp_layer_g;
 var temp_polyLine_g;
 var temp_point_g;
 var mapTree;
+
 function AbsorbDllFile() {
     var file = document.getElementById('file').files[0];
 
@@ -133,6 +134,11 @@ function doDdlProcessing() {
         if (pointArgs != null) {
             temp_polyLine_g.setField = pointArgs[1];
             continue;
+        }
+        pointArgs = str.match(/record\(\"(.+)\"\)\srecord_key\(\"(.+)\"\)/i);
+        if (pointArgs != null) {
+            //record("SUBSTN") record_key("STNA7_PG")
+            temp_polyLine_g.meta.push({"key": pointArgs[1], "value": pointArgs[2]});
         }
     }
     // final wrapUp
