@@ -42,10 +42,16 @@ function convertDdlToJson() {
 
     // do layer start quest
     doDdlProcessing();
+
+    for (var i = 0; i < mapTree.layers.length; i++) {
+        console.log(i + " -- " + mapTree.layers[i].name + " --- " + mapTree.layers[i].polyLines.length + " lines")
+    }
 }
 
 function doDdlProcessing() {
     var inLayerBlock = false;
+    var inLayerBlockBrackets = false;
+    var inPolyLineBlockBrackets = false;
     var inPolyLineBlock = false;
     var level = -1;
     for (var iter = 0; iter < ddl_lines_g.length; iter++) {
@@ -53,9 +59,25 @@ function doDdlProcessing() {
 
         if (str == "(") {
             level++;
+            if (inLayerBlock == true && ddl_lines_g[iter].indexOf("		(") == 0) {
+                // A Layer could have has started
+                inLayerBlockBrackets = true;
+            }
+            if (inPolyLineBlock == true && ddl_lines_g[iter].indexOf("			(") == 0) {
+                // A Layer could have has started
+                inPolyLineBlockBrackets = true;
+            }
             continue;
         }
         if (str == ")") {
+            if (inLayerBlockBrackets == true && ddl_lines_g[iter].indexOf("		)") == 0) {
+                inLayerBlockBrackets = false;
+                inLayerBlock = false;
+            }
+            if (inPolyLineBlockBrackets == true && ddl_lines_g[iter].indexOf("			)") == 0) {
+                inPolyLineBlockBrackets = false;
+                inPolyLineBlock = false;
+            }
             level--;
             continue;
         }
@@ -73,7 +95,8 @@ function doDdlProcessing() {
 
         // A polyLine started
         if (str == "polyline") {
-            if (!(inLayerBlock == true && level == 1)) {
+            if (!(inLayerBlockBrackets)) {
+                // We are not in layer block
                 continue;
             }
             // A new polyLine has started and so the current polyLine has ended. So push the temp polyLine to the temp Layer and make temp polyLine as null
@@ -82,7 +105,7 @@ function doDdlProcessing() {
             inPolyLineBlock = true;
             continue;
         }
-        if (!(inLayerBlock && inPolyLineBlock && level == 2)) {
+        if (!(inLayerBlockBrackets == true && inPolyLineBlockBrackets == true)) {
             // We are not in a layer polyLine block
             continue;
         }
