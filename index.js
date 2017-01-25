@@ -187,11 +187,13 @@ function drawLayersOnCanvas() {
         var drawingLayerLines = mapTree.layers[layerIndex].polyLines;
         for (var i = 0; i < drawingLayerLines.length; i++) {
             var polyLine = drawingLayerLines[i];
+            var origin = {x: polyLine.points[0].x, y: polyLine.points[0].y};
+            var scale = 10;
             ctx.beginPath();
-            ctx.moveTo(polyLine.points[0].x / 10, polyLine.points[0].y / 10);
+            ctx.moveTo(origin.x / scale, origin.y / scale);
             for (var k = 0; k < polyLine.points.length && k < 2; k++) {
                 //draw a line on canvas
-                ctx.lineTo(polyLine.points[k].x / 10, polyLine.points[k].y / 10);
+                ctx.lineTo(polyLine.points[k].x / scale, polyLine.points[k].y / scale);
             }
             ctx.stroke();
         }
