@@ -2,28 +2,14 @@
 
 function MapJson() {
     this.layers = [];
-    this.pushLayer = pushLayer.bind(this);
-
-    function pushLayer(layer_) {
-        if (layer_ != null) {
-            this.layers.push(layer_);
-        }
-    }
 }
 
 function Layer(name) {
     this.polyLines = [];
     this.name = null;
-    this.pushPolyLine = pushPolyLine.bind(this);
     // set provided name, if any
     if (name) {
         this.name = name;
-    }
-
-    function pushPolyLine(polyLine_) {
-        if (polyLine_ != null) {
-            this.polyLines.push(polyLine_);
-        }
     }
 }
 
@@ -33,16 +19,9 @@ function PolyLine(name) {
     this.meta = [];
     this.gab = null;
     this.setField = null;
-    this.pushPoint = pushPoint.bind(this);
     // set provided name, if any
     if (name) {
         this.name = name;
-    }
-
-    function pushPoint(point_) {
-        if (point_ != null) {
-            this.points.push(point_);
-        }
     }
 }
 

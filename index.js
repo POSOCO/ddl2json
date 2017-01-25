@@ -1,3 +1,11 @@
+document.onreadystatechange = function () {
+    if (document.readyState == "interactive") {
+
+    } else if (document.readyState == "complete") {
+        $(".chosen-select").chosen({enable_split_word_search: true, search_contains: true});
+    }
+};
+
 var ddl_lines_g = [];
 var lines_iterator_g = 0;
 
@@ -44,6 +52,17 @@ function convertDdlToJson() {
     // do layer start quest
     doDdlProcessing();
 
+    var sel = document.getElementById("actives_layers_select");
+    $(sel).empty();
+    $(sel).trigger("chosen:updated");
+    for (var i = 0; i < mapTree.layers.length; i++) {
+        $(sel).append($("<option/>", {
+            value: i,
+            text: i + 1 + "-" + mapTree.layers[i].name + " - " + mapTree.layers[i].polyLines.length
+        }));
+    }
+    $(sel).trigger("chosen:updated");
+
     for (var i = 0; i < mapTree.layers.length; i++) {
         console.log(i + " -- " + mapTree.layers[i].name + " --- " + mapTree.layers[i].polyLines.length + " lines")
     }
@@ -87,7 +106,9 @@ function doDdlProcessing() {
         var variables = str.match(/simple_layer\s\"(.+)\"/i);
         if (variables != null) {
             // push old temporary layer to layers array
-            mapTree.pushLayer(temp_layer_g);
+            if (temp_layer_g != null) {
+                mapTree.layers.push(temp_layer_g);
+            }
             // create a new temporary global layer
             temp_layer_g = new Layer(variables[1]);
             inLayerBlock = true;
@@ -101,7 +122,9 @@ function doDdlProcessing() {
                 continue;
             }
             // A new polyLine has started and so the current polyLine has ended. So push the temp polyLine to the temp Layer and make temp polyLine as null
-            temp_layer_g.pushPolyLine(temp_polyLine_g);
+            if (temp_polyLine_g != null) {
+                temp_layer_g.polyLines.push(temp_polyLine_g);
+            }
             temp_polyLine_g = new PolyLine(null);
             inPolyLineBlock = true;
             continue;
@@ -114,13 +137,13 @@ function doDdlProcessing() {
         // If a point is encountered
         var pointArgs = str.match(/point\((.+)\s(.+)\)/i);
         if (pointArgs != null) {
-            temp_polyLine_g.pushPoint(new Point(pointArgs[1], pointArgs[2]));
+            temp_polyLine_g.points.push(new Point(pointArgs[1], pointArgs[2]));
             continue;
         }
         // If an origin is encountered
         pointArgs = str.match(/origin\((.+)\s(.+)\)/i);
         if (pointArgs != null) {
-            temp_polyLine_g.pushPoint(new Point(pointArgs[1], pointArgs[2]));
+            temp_polyLine_g.points.push(new Point(pointArgs[1], pointArgs[2]));
             continue;
         }
         // If a gab is encountered
@@ -144,32 +167,33 @@ function doDdlProcessing() {
     // final wrapUp
     if (temp_layer_g != null) {
         if (temp_polyLine_g != null) {
-            temp_layer_g.pushPolyLine(temp_polyLine_g);
+            if (temp_polyLine_g != null) {
+                temp_layer_g.polyLines.push(temp_polyLine_g);
+            }
         }
-        mapTree.pushLayer(temp_layer_g);
+        if (temp_layer_g != null) {
+            mapTree.layers.push(temp_layer_g);
+        }
     }
 }
 
-function drawALayerOnCanvas() {
-    var name = document.getElementById("drawingLayerInput").value;
-    var layerIndex = 0;
-    for (var i = 0; i < mapTree.layers.length; i++) {
-        if (mapTree.layers[i].name == name) {
-            layerIndex = i;
-            break;
-        }
-    }
-    var drawingLayerLines = mapTree.layers[layerIndex].polyLines;
+function drawLayersOnCanvas() {
+    var sel = document.getElementById("actives_layers_select");
+    var selectedVals = $(sel).val();
     var ctx = document.getElementById("myCanvas").getContext("2d");
-    ctx.clearRect(0, 0, 500, 500);
-    for (var i = 0; i < drawingLayerLines.length; i++) {
-        var polyLine = drawingLayerLines[i];
-        ctx.beginPath();
-        ctx.moveTo(polyLine.points[0].x / 10, polyLine.points[0].y / 10);
-        for (var k = 0; k < polyLine.points.length; k++) {
-            //draw a line on canvas
-            ctx.lineTo(polyLine.points[k].x / 10, polyLine.points[k].y / 10);
+    ctx.clearRect(0, 0, 800, 500);
+    for (var p = 0; p < selectedVals.length; p++) {
+        var layerIndex = selectedVals[p];
+        var drawingLayerLines = mapTree.layers[layerIndex].polyLines;
+        for (var i = 0; i < drawingLayerLines.length; i++) {
+            var polyLine = drawingLayerLines[i];
+            ctx.beginPath();
+            ctx.moveTo(polyLine.points[0].x / 10, polyLine.points[0].y / 10);
+            for (var k = 0; k < polyLine.points.length && k < 2; k++) {
+                //draw a line on canvas
+                ctx.lineTo(polyLine.points[k].x / 10, polyLine.points[k].y / 10);
+            }
+            ctx.stroke();
         }
-        ctx.stroke();
     }
 }
