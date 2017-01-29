@@ -14,18 +14,21 @@
         class="chosen-select" multiple style="width:500px">
 </select>
 <button onclick="drawLayersOnCanvas()">Draw Layer</button>
+<span style="margin-left:36px">Scale: </span>
+<input type="number" value="9" id="scaleInput"/>
 <br><br>
 <canvas id="myCanvas" width="800" height="500" style="border:1px solid #d3d3d3;"></canvas>
 <div>
     <h3>Instructions</h3>
     <ol>
+		<li>Click <a href="./mapboard.ddl" target="_blank">here</a> for downloading the ddl file</li>
         <li>This tool converts ddl file of RECON to a json file and visualises it on a canvas</li>
         <li>Upload the DDL file and press "Convert To JSON" button</li>
         <li>Then select the layers you want to visualise</li>
         <li>Click "Draw Layer" button</li>
         <li>Cheers :-)</li>
     </ol>
-    <h4>Click <a href="./All_India_Map_dset.ddl" target="_blank">here</a> for downloading the ddl file</h4>
+    <h4></h4>
 </div>
 <script src="ddlJson.js"></script>
 <script src="index.js"></script>
