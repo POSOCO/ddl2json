@@ -195,6 +195,7 @@ function drawLayersOnCanvas() {
                 //draw a line on canvas
 				var newPoint = {x: origin.x + (+polyLine.points[k].x), y: origin.y + (+polyLine.points[k].y)};
                 ctx.lineTo(newPoint.x/scale, newPoint.y/scale);
+		    ctx.moveTo(newPoint.x/scale, newPoint.y/scale);		    
             }
             ctx.stroke();
         }
