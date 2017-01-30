@@ -3,6 +3,26 @@ document.onreadystatechange = function () {
 
     } else if (document.readyState == "complete") {
         $(".chosen-select").chosen({enable_split_word_search: true, search_contains: true});
+        document.getElementById('myCanvas').onmousedown = function (e) {
+            var self = this;
+            var xPrev = e.clientX;
+            var yPrev = e.clientY;
+            document.onmousemove = function (e) {
+                e = e || event;
+                var clientX = e.clientX;
+                var clientY = e.clientY;
+                xOffset_ += (clientX - xPrev) * 5;
+                yOffset_ += (clientY - yPrev) * 5;
+                xPrev = clientX;
+                yPrev = clientY;
+                drawLayersOnCanvas();
+            };
+            this.onmouseup = function () {
+                document.onmousemove = null
+            }
+        };
+
+//document.getElementById('ball').ondragstart = function() { return false }
     }
 };
 
@@ -13,7 +33,8 @@ var temp_layer_g;
 var temp_polyLine_g;
 var temp_point_g;
 var mapTree;
-
+var xOffset_ = 0;
+var yOffset_ = 0;
 function AbsorbDllFile() {
     var file = document.getElementById('file').files[0];
 
@@ -190,14 +211,27 @@ function drawLayersOnCanvas() {
             var polyLine = drawingLayerLines[i];
             var origin = {x: +polyLine.points[1].x, y: +polyLine.points[1].y};
             ctx.beginPath();
-            ctx.moveTo(origin.x / scale, origin.y / scale);
+            ctx.moveTo((origin.x + xOffset_) / scale, (origin.y + yOffset_) / scale);
             for (var k = 2; k < polyLine.points.length; k++) {
                 //draw a line on canvas
                 var newPoint = {x: origin.x + (+polyLine.points[k].x), y: origin.y + (+polyLine.points[k].y)};
-                ctx.lineTo(newPoint.x / scale, newPoint.y / scale);
+                ctx.lineTo((newPoint.x + xOffset_) / scale, (newPoint.y + yOffset_) / scale);
                 origin = newPoint;
             }
             ctx.stroke();
         }
     }
 }
+
+// canvas offset changing function
+function changeXOffset(val) {
+    xOffset_ = +val;
+    drawLayersOnCanvas();
+}
+
+// canvas offset changing function
+function addXOffset(val) {
+    xOffset_ += val;
+    drawLayersOnCanvas();
+}
+
