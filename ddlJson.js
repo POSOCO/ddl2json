@@ -18,6 +18,7 @@ function PolyLine(name) {
     this.name = null;
     this.meta = [];
     this.gab = null;
+    this.cam = null;
     this.setField = null;
     // set provided name, if any
     if (name) {
