@@ -241,3 +241,31 @@ function addXOffset(val) {
     drawLayersOnCanvas();
 }
 
+// create eDNA address from matadata
+function createKeyFromMeta(metaArray){
+    var substn = null;
+    var devtyp = null;
+    var device = null;
+    var analog = null;
+    var ednaLongKey = null;
+    for(var i = 0; i < metaArray.length; i++){
+        var metaObj = metaArray[i];
+        if(metaObj.key == "SUBSTN"){
+           substn = metaObj.value;
+        }
+        if(metaObj.key == "DEVTYP"){
+           devtyp = metaObj.value;
+        }
+        if(metaObj.key == "DEVICE"){
+           device = metaObj.value;
+        }
+        if(metaObj.key == "ANALOG"){
+           analog = metaObj.value;
+        }
+    }
+    if(substn != null && devtyp != null && device != null && analog != null){
+       ednaLongKey = substn + "." + devtyp + "." + device + ".MES1" + "." +analog;
+    }
+    return ednaLongKey;
+}
+
