@@ -14,8 +14,8 @@
         class="chosen-select" multiple style="width:500px">
 </select>
 <button onclick="drawLayersOnCanvas()">Draw Layer</button>
-<span style="margin-left:36px">Scale: </span>
-<input type="number" value="9" id="scaleInput" onchange="drawLayersOnCanvas()"/>
+<span style="margin-left:36px">Zoom: </span>
+<input type="number" value="9" min="1" id="scaleInput" onchange="drawLayersOnCanvas()"/>
 <br><br>
 <canvas id="myCanvas" width="800" height="500" style="border:1px solid #d3d3d3;"></canvas>
 <br>
