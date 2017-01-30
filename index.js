@@ -179,6 +179,12 @@ function doDdlProcessing() {
             temp_polyLine_g.setField = pointArgs[1];
             continue;
         }
+        // If a cam is encountered
+        pointArgs = str.match(/cam\s\"(.+)\"/i);
+        if (pointArgs != null) {
+            temp_polyLine_g.cam = pointArgs[1];
+            continue;
+        }
         pointArgs = str.match(/record\(\"(.+)\"\)\srecord_key\(\"(.+)\"\)/i);
         if (pointArgs != null) {
             //record("SUBSTN") record_key("STNA7_PG")
