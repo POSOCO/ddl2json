@@ -15,7 +15,7 @@
 </select>
 <button onclick="drawLayersOnCanvas()">Draw Layer</button>
 <span style="margin-left:36px">Scale: </span>
-<input type="number" value="9" id="scaleInput"/>
+<input type="number" value="9" id="scaleInput" onchange="drawLayersOnCanvas()"/>
 <br><br>
 <canvas id="myCanvas" width="800" height="500" style="border:1px solid #d3d3d3;"></canvas>
 <br>
