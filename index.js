@@ -182,7 +182,7 @@ function drawLayersOnCanvas() {
     var selectedVals = $(sel).val();
     var ctx = document.getElementById("myCanvas").getContext("2d");
     ctx.clearRect(0, 0, 800, 500);
-	var scale = +document.getElementById("scaleInput").value;
+    var scale = +document.getElementById("scaleInput").value;
     for (var p = 0; p < selectedVals.length; p++) {
         var layerIndex = selectedVals[p];
         var drawingLayerLines = mapTree.layers[layerIndex].polyLines;
@@ -193,9 +193,9 @@ function drawLayersOnCanvas() {
             ctx.moveTo(origin.x / scale, origin.y / scale);
             for (var k = 2; k < polyLine.points.length; k++) {
                 //draw a line on canvas
-				var newPoint = {x: origin.x + (+polyLine.points[k].x), y: origin.y + (+polyLine.points[k].y)};
-                ctx.lineTo(newPoint.x/scale, newPoint.y/scale);
-		    ctx.moveTo(newPoint.x/scale, newPoint.y/scale);		    
+                var newPoint = {x: origin.x + (+polyLine.points[k].x), y: origin.y + (+polyLine.points[k].y)};
+                ctx.lineTo(newPoint.x / scale, newPoint.y / scale);
+                origin = newPoint;
             }
             ctx.stroke();
         }
