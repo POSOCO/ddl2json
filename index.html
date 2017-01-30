@@ -15,7 +15,8 @@
 </select>
 <button onclick="drawLayersOnCanvas()">Draw Layer</button>
 <span style="margin-left:36px">Zoom: </span>
-<input type="number" value="9" min="1" id="scaleInput" onchange="drawLayersOnCanvas()"/>
+<button onclick="addZoom(1)">-</button>
+<button onclick="addZoom(-1)">+</button>
 <br><br>
 <canvas id="myCanvas" width="800" height="500" style="border:1px solid #d3d3d3;"></canvas>
 <br>

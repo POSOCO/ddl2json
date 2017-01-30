@@ -22,7 +22,7 @@ document.onreadystatechange = function () {
             }
         };
 
-//document.getElementById('ball').ondragstart = function() { return false }
+    //document.getElementById('myCanvas').ondragstart = function() { return false }
     }
 };
 
@@ -35,6 +35,8 @@ var temp_point_g;
 var mapTree;
 var xOffset_ = 0;
 var yOffset_ = 0;
+var scale_ = 9;
+
 function AbsorbDllFile() {
     var file = document.getElementById('file').files[0];
 
@@ -209,7 +211,6 @@ function drawLayersOnCanvas() {
     var selectedVals = $(sel).val();
     var ctx = document.getElementById("myCanvas").getContext("2d");
     ctx.clearRect(0, 0, 800, 500);
-    var scale = +document.getElementById("scaleInput").value;
     for (var p = 0; p < selectedVals.length; p++) {
         var layerIndex = selectedVals[p];
         var drawingLayerLines = mapTree.layers[layerIndex].polyLines;
@@ -217,11 +218,11 @@ function drawLayersOnCanvas() {
             var polyLine = drawingLayerLines[i];
             var origin = {x: +polyLine.points[1].x, y: +polyLine.points[1].y};
             ctx.beginPath();
-            ctx.moveTo((origin.x + xOffset_) / scale, (origin.y + yOffset_) / scale);
+            ctx.moveTo((origin.x + xOffset_) / scale_, (origin.y + yOffset_) / scale_);
             for (var k = 2; k < polyLine.points.length; k++) {
                 //draw a line on canvas
                 var newPoint = {x: origin.x + (+polyLine.points[k].x), y: origin.y + (+polyLine.points[k].y)};
-                ctx.lineTo((newPoint.x + xOffset_) / scale, (newPoint.y + yOffset_) / scale);
+                ctx.lineTo((newPoint.x + xOffset_) / scale_, (newPoint.y + yOffset_) / scale_);
                 origin = newPoint;
             }
             ctx.stroke();
@@ -241,30 +242,40 @@ function addXOffset(val) {
     drawLayersOnCanvas();
 }
 
+// plotting scaling changing function
+function addZoom(val) {
+    var tempZoom = scale_ + val;
+    if (tempZoom < 1) {
+        tempZoom = 1;
+    }
+    scale_ = tempZoom;
+    drawLayersOnCanvas();
+}
+
 // create eDNA address from matadata
-function createKeyFromMeta(metaArray){
+function createKeyFromMeta(metaArray) {
     var substn = null;
     var devtyp = null;
     var device = null;
     var analog = null;
     var ednaLongKey = null;
-    for(var i = 0; i < metaArray.length; i++){
+    for (var i = 0; i < metaArray.length; i++) {
         var metaObj = metaArray[i];
-        if(metaObj.key == "SUBSTN"){
-           substn = metaObj.value;
+        if (metaObj.key == "SUBSTN") {
+            substn = metaObj.value;
         }
-        if(metaObj.key == "DEVTYP"){
-           devtyp = metaObj.value;
+        if (metaObj.key == "DEVTYP") {
+            devtyp = metaObj.value;
         }
-        if(metaObj.key == "DEVICE"){
-           device = metaObj.value;
+        if (metaObj.key == "DEVICE") {
+            device = metaObj.value;
         }
-        if(metaObj.key == "ANALOG"){
-           analog = metaObj.value;
+        if (metaObj.key == "ANALOG") {
+            analog = metaObj.value;
         }
     }
-    if(substn != null && devtyp != null && device != null && analog != null){
-       ednaLongKey = substn + "." + devtyp + "." + device + ".MES1" + "." +analog;
+    if (substn != null && devtyp != null && device != null && analog != null) {
+        ednaLongKey = substn + "." + devtyp + "." + device + ".MES1" + "." + analog;
     }
     return ednaLongKey;
 }
