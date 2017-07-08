@@ -9,6 +9,11 @@
 <input type="file" name="file" id="file">
 <br>
 <button onclick="AbsorbDllFile()">Convert To JSON</button>
+<button id="exportFile">Export JSON</button>
+<br><br>
+<input type="file" name="addressFile" id="addressFile">
+<br>
+<button onclick="AbsorbAddressFile()">Read Addresses</button>
 <br><br>
 <select id="actives_layers_select" data-placeholder="Select Layers..."
         class="chosen-select" multiple style="width:500px">
@@ -20,14 +25,14 @@
 <br><br>
 <canvas id="myCanvas" width="800" height="500" style="border:1px solid #d3d3d3;"></canvas>
 <br>
-<button onclick="addXOffset(-50)"> << </button>
-<button onclick="addXOffset(-10)"> < </button>
-<button onclick="addXOffset(10)"> > </button>
-<button onclick="addXOffset(50)"> >> </button>
+<button onclick="addXOffset(-50)"> <<</button>
+<button onclick="addXOffset(-10)"> <</button>
+<button onclick="addXOffset(10)"> ></button>
+<button onclick="addXOffset(50)"> >></button>
 <div>
     <h3>Instructions</h3>
     <ol>
-		<li>Click <a href="./mapboard.ddl" target="_blank">here</a> for downloading the ddl file</li>
+        <li>Click <a href="./mapboard.ddl" target="_blank">here</a> for downloading the ddl file</li>
         <li>This tool converts ddl file of RECON to a json file and visualises it on a canvas</li>
         <li>Upload the DDL file and press "Convert To JSON" button</li>
         <li>Then select the layers you want to visualise</li>
@@ -37,6 +42,7 @@
     <h4></h4>
 </div>
 <script src="ddlJson.js"></script>
+<script src="libs/js/csvToArray.js"></script>
 <script src="index.js"></script>
 <script src="libs/js/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="libs/js/chosen.min.css">

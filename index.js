@@ -22,11 +22,12 @@ document.onreadystatechange = function () {
             }
         };
 
-    //document.getElementById('myCanvas').ondragstart = function() { return false }
+        //document.getElementById('myCanvas').ondragstart = function() { return false }
     }
 };
 
 var ddl_lines_g = [];
+var line_addresses_g = [];
 var lines_iterator_g = 0;
 
 var temp_layer_g;
@@ -49,6 +50,17 @@ function AbsorbDllFile() {
         ddl_lines_g = this.result.split('\n');
         //console.log(lines);
         convertDdlToJson();
+    };
+    reader.readAsText(file);
+}
+
+function AbsorbAddressFile() {
+    var file = document.getElementById('addressFile').files[0];
+
+    var reader = new FileReader();
+    reader.onload = function (progressEvent) {
+        // Get the addresses
+        line_addresses_g = CSVToArray(reader.result);
     };
     reader.readAsText(file);
 }
@@ -88,6 +100,13 @@ function convertDdlToJson() {
 
     for (var i = 0; i < mapTree.layers.length; i++) {
         console.log(i + " -- " + mapTree.layers[i].name + " --- " + mapTree.layers[i].polyLines.length + " lines")
+    }
+
+    // attach addresses to lines
+    for (var i = 0; i < mapTree.layers.length; i++) {
+        for (var k = 0; k < mapTree.layers[i].polyLines.length; k++) {
+            mapTree.layers[i].polyLines[k].ednaId = getEDnaIdFromMeta(mapTree.layers[i].polyLines[k].meta);
+        }
     }
 }
 
@@ -280,3 +299,54 @@ function createKeyFromMeta(metaArray) {
     return ednaLongKey;
 }
 
+function searchAddresses(typeStr, substationStr, deviceStr, unitsStr) {
+    var addressStr = null;
+    for (var i = 0; i < line_addresses_g.length; i++) {
+        // ss = 2, dev_type= 3, dev = 4, units = 6, address = 1
+        var addressArray = line_addresses_g[i];
+        if (addressArray[2] == substationStr && addressArray[3] == typeStr && addressArray[4] == deviceStr && addressArray[6] == unitsStr) {
+            addressStr = "WRLDCMP.SCADA1." + addressArray[0];
+            break;
+        }
+    }
+    return addressStr;
+}
+
+function getEDnaIdFromMeta(metaArray) {
+    var substn = null;
+    var devtyp = null;
+    var device = null;
+    var analog = null;
+    var addressStr = null;
+    for (var i = 0; i < metaArray.length; i++) {
+        var metaObj = metaArray[i];
+        if (metaObj.key == "SUBSTN") {
+            substn = metaObj.value;
+        }
+        if (metaObj.key == "DEVTYP") {
+            devtyp = metaObj.value;
+        }
+        if (metaObj.key == "DEVICE") {
+            device = metaObj.value;
+        }
+        if (metaObj.key == "ANALOG") {
+            analog = metaObj.value;
+        }
+    }
+    if (substn != null && devtyp != null && device != null && analog != null) {
+        addressStr = searchAddresses(devtyp, substn, device, analog);
+    }
+    return addressStr;
+}
+
+document.getElementById("exportFile").onclick = function () {
+    var text = JSON.stringify(mapTree);
+    var filename = "export";
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+};
